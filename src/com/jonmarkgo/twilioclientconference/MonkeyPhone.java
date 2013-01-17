@@ -1,7 +1,6 @@
 package com.jonmarkgo.twilioclientconference;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.http.HttpResponse;
@@ -26,7 +25,14 @@ public class MonkeyPhone implements Twilio.InitListener {
 
 	public MonkeyPhone(Context context) {
 		this.context = context;
+		Log.d(context.getString(R.string.log_key), "new MonkeyPhone");
+
 		Twilio.initialize(context, this /* Twilio.InitListener */);
+
+	}
+
+	public void shutdown() {
+		Twilio.shutdown();
 	}
 
 	@Override
@@ -71,11 +77,10 @@ public class MonkeyPhone implements Twilio.InitListener {
 	private class GetCapabilityTokenTask extends
 			AsyncTask<String, Integer, String> {
 		private ProgressDialog dialog;
-		private TwilioClientconferenceActivity activity;
 		private Context context;
 
 		public GetCapabilityTokenTask(TwilioClientconferenceActivity activity) {
-			this.activity = activity;
+
 			context = activity;
 			dialog = new ProgressDialog(context);
 		}
@@ -87,9 +92,6 @@ public class MonkeyPhone implements Twilio.InitListener {
 
 		@Override
 		protected String doInBackground(String... receivers) {
-			InputStream is = null;
-			int count = receivers.length;
-			long totalSize = 0;
 			HttpClient httpclient = new DefaultHttpClient();
 			Log.d(context.getString(R.string.log_key), "getting cap token");
 			try {

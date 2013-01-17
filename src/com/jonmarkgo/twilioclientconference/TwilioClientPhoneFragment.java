@@ -116,7 +116,8 @@ public class TwilioClientPhoneFragment extends Fragment {
 				if (response.getStatusLine().getStatusCode() == 204) {
 					return true;
 				} else {
-					Log.e(getString(R.string.log_key),"Delete response code: " + response.getStatusLine().getStatusCode());
+					Log.e(getString(R.string.log_key), "Delete response code: "
+							+ response.getStatusLine().getStatusCode());
 					return false;
 				}
 			} catch (Exception e) {
@@ -135,9 +136,10 @@ public class TwilioClientPhoneFragment extends Fragment {
 			if (success) {
 				Toast.makeText(context, getString(R.string.deleted_message),
 						Toast.LENGTH_LONG).show();
+				phone.shutdown();
 				PreferenceManager.getDefaultSharedPreferences(getActivity())
 						.edit().remove(getString(R.string.phonenumber_key))
-						.commit();
+						.remove(getString(R.string.pnsid_key)).commit();
 				((TwilioClientconferenceActivity) getActivity())
 						.switchToSetupFragment();
 			} else {

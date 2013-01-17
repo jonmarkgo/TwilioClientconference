@@ -43,6 +43,8 @@ public class TwilioClientSetupFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_conference_setup, parent,
 				false);
 
+		getActivity().setTitle(getString(R.string.setup_title));
+
 		Button setupButton = (Button) v
 				.findViewById(R.id.conference_setup_button);
 		setupButton.setOnClickListener(new View.OnClickListener() {
@@ -61,8 +63,6 @@ public class TwilioClientSetupFragment extends Fragment {
 		PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
 				.putString(getString(R.string.phonenumber_key), phonenumber)
 				.putString(getString(R.string.pnsid_key), pnsid).commit();
-		((TwilioClientconferenceActivity) getActivity())
-				.switchToPhoneFragment();
 		Log.d(getString(R.string.log_key), "Phone number: " + phonenumber);
 		Log.d(getString(R.string.log_key), "PNSid: " + pnsid);
 
@@ -97,6 +97,8 @@ public class TwilioClientSetupFragment extends Fragment {
 				Toast.makeText(context, getString(R.string.error_message),
 						Toast.LENGTH_LONG).show();
 			}
+			((TwilioClientconferenceActivity) getActivity())
+					.switchToPhoneFragment();
 		}
 
 		@Override
