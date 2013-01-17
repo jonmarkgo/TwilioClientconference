@@ -1,7 +1,5 @@
 package com.jonmarkgo.twilioclientconference;
 
-import java.io.InputStream;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -86,11 +84,9 @@ public class TwilioClientPhoneFragment extends Fragment {
 	private class DeletePhoneNumberTask extends
 			AsyncTask<String, Integer, Boolean> {
 		private ProgressDialog dialog;
-		private TwilioClientconferenceActivity activity;
 		private Context context;
 
 		public DeletePhoneNumberTask(TwilioClientconferenceActivity activity) {
-			this.activity = activity;
 			context = activity;
 			dialog = new ProgressDialog(context);
 		}
@@ -101,8 +97,6 @@ public class TwilioClientPhoneFragment extends Fragment {
 		}
 
 		protected Boolean doInBackground(String... pnsid) {
-			InputStream is = null;
-			long totalSize = 0;
 			HttpClient httpclient = new DefaultHttpClient();
 
 			((AbstractHttpClient) httpclient).getCredentialsProvider()
@@ -118,11 +112,11 @@ public class TwilioClientPhoneFragment extends Fragment {
 						"https://api.twilio.com/2010-04-01/Accounts/"
 								+ getString(R.string.account_sid)
 								+ "/IncomingPhoneNumbers/" + pnsid[0] + ".json");
-				// httpdelete.setEntity(new UrlEncodedFormEntity(pairs));
 				HttpResponse response = httpclient.execute(httpdelete);
 				if (response.getStatusLine().getStatusCode() == 204) {
 					return true;
 				} else {
+					Log.e(getString(R.string.log_key),"Delete response code: " + response.getStatusLine().getStatusCode());
 					return false;
 				}
 			} catch (Exception e) {

@@ -1,7 +1,6 @@
 package com.jonmarkgo.twilioclientconference;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
@@ -22,7 +21,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,31 +68,12 @@ public class TwilioClientSetupFragment extends Fragment {
 
 	}
 
-	private String inputStreamToString(InputStream is) {
-		String s = "";
-		String line = "";
-
-		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-		try {
-			while ((line = rd.readLine()) != null) {
-				s += line;
-			}
-		} catch (Exception e) {
-
-		}
-		// Return full string
-		return s;
-	}
-
 	private class BuyPhoneNumberTask extends
 			AsyncTask<String, Integer, Boolean> {
 		private ProgressDialog dialog;
-		private TwilioClientconferenceActivity activity;
 		private Context context;
 
 		public BuyPhoneNumberTask(TwilioClientconferenceActivity activity) {
-			this.activity = activity;
 			context = activity;
 			dialog = new ProgressDialog(context);
 		}
@@ -122,9 +101,6 @@ public class TwilioClientSetupFragment extends Fragment {
 
 		@Override
 		protected Boolean doInBackground(String... unused) {
-			InputStream is = null;
-
-			long totalSize = 0;
 			HttpClient httpclient = new DefaultHttpClient();
 
 			((AbstractHttpClient) httpclient).getCredentialsProvider()
