@@ -18,109 +18,126 @@ import android.widget.Toast;
 import com.twilio.client.Connection;
 import com.twilio.client.Device;
 import com.twilio.client.Twilio;
- 
-public class MonkeyPhone implements Twilio.InitListener
-{
-    private Device device;
-    private Connection connection;
-    private Context context;
-    public MonkeyPhone(Context context)
-    {
-    	this.context = context;
-        Twilio.initialize(context, this /* Twilio.InitListener */);
-    }
- 
-    @Override /* Twilio.InitListener method */
-    public void onInitialized()
-    {
-        Log.d("sdk", "Twilio SDK is ready");
-        new GetCapabilityTokenTask((TwilioClientconferenceActivity)context).execute();
-        
-    }
- 
-    @Override /* Twilio.InitListener method */
-    public void onError(Exception e)
-    {
-        Log.e("sdk", "Twilio SDK couldn't start: " + e.getLocalizedMessage());
-    }
- 
-    public void connect()
-    {
-        connection = device.connect(null /* parameters */, null /* ConnectionListener */);
-        if (connection == null)
-            Log.w("sdk", "Failed to create new connection");
-    }
-    public void disconnect()
-    {
-        if (connection != null) {
-            connection.disconnect();
-            connection = null;
-        }
-    }
-    @Override
-    protected void finalize()
-    {
-        if (connection != null)
-            connection.disconnect();
-        if (device != null)
-            device.release();
-    }
-    
-    private class GetCapabilityTokenTask extends AsyncTask<String, Integer, String> {
-    	private ProgressDialog dialog;
-    	private TwilioClientconferenceActivity activity;
-    	private Context context;
-    	 public GetCapabilityTokenTask(TwilioClientconferenceActivity activity) {
-    		 this.activity = activity;
-             context = activity;
-             dialog = new ProgressDialog(context);
-         }
-    	  protected void onPreExecute() {
-              this.dialog.setMessage("Loading...");
-              this.dialog.show();
-          }
-       
-    	@Override
-        protected String doInBackground(String... receivers) {
-            InputStream is = null;
-            int count = receivers.length;
-            long totalSize = 0;
-            HttpClient httpclient = new DefaultHttpClient();
-Log.d("sdk", "getting cap token");
-            try {
-            HttpGet httpget = new HttpGet("http://twilio.jonmarkgo.com/cap.php");
-            HttpResponse response = httpclient.execute(httpget);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
-            String token = reader.readLine();
-            Log.d("cap token", token);
-            return token;
 
-        } catch (Exception e) {
-            Log.e("HTTP", "Error in http connection " + e.toString());
-            return new String("ERROR");
-        }
-         
-        }
-    	@Override
-        protected void onPostExecute(String token) {
-    		   
-            if (dialog.isShowing()) {
-            dialog.dismiss();
-            }
+public class MonkeyPhone implements Twilio.InitListener {
+	private Device device;
+	private Connection connection;
+	private Context context;
 
-      
-    		Log.d("cap token 2", token);
-    		try {
-                device = Twilio.createDevice(token, null /* DeviceListener */);
-                if (device != null) {
-                    Toast.makeText(context, "READY!", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(context, "Error!", Toast.LENGTH_LONG).show();
-                }
-            } catch (Exception e) {
-            	Toast.makeText(context, "Error!", Toast.LENGTH_LONG).show();
-                Log.e("sdk", "Failed to obtain capability token: " + e.getLocalizedMessage());
-            }
-        }
-    }
+	public MonkeyPhone(Context context) {
+		this.context = context;
+		Twilio.initialize(context, this /* Twilio.InitListener */);
+	}
+
+	@Override
+	/* Twilio.InitListener method */
+	public void onInitialized() {
+		Log.d(context.getString(R.string.log_key), "Twilio SDK is ready");
+		new GetCapabilityTokenTask((TwilioClientconferenceActivity) context)
+				.execute();
+
+	}
+
+	@Override
+	/* Twilio.InitListener method */
+	public void onError(Exception e) {
+		Log.e(context.getString(R.string.log_key),
+				"Twilio SDK couldn't start: " + e.getLocalizedMessage());
+	}
+
+	public void connect() {
+		connection = device
+				.connect(null /* parameters */, null /* ConnectionListener */);
+		if (connection == null)
+			Log.w(context.getString(R.string.log_key),
+					"Failed to create new connection");
+	}
+
+	public void disconnect() {
+		if (connection != null) {
+			connection.disconnect();
+			connection = null;
+		}
+	}
+
+	@Override
+	protected void finalize() {
+		if (connection != null)
+			connection.disconnect();
+		if (device != null)
+			device.release();
+	}
+
+	private class GetCapabilityTokenTask extends
+			AsyncTask<String, Integer, String> {
+		private ProgressDialog dialog;
+		private TwilioClientconferenceActivity activity;
+		private Context context;
+
+		public GetCapabilityTokenTask(TwilioClientconferenceActivity activity) {
+			this.activity = activity;
+			context = activity;
+			dialog = new ProgressDialog(context);
+		}
+
+		protected void onPreExecute() {
+			this.dialog.setMessage(context.getString(R.string.loading_message));
+			this.dialog.show();
+		}
+
+		@Override
+		protected String doInBackground(String... receivers) {
+			InputStream is = null;
+			int count = receivers.length;
+			long totalSize = 0;
+			HttpClient httpclient = new DefaultHttpClient();
+			Log.d(context.getString(R.string.log_key), "getting cap token");
+			try {
+				HttpGet httpget = new HttpGet(
+						context.getString(R.string.capability_url));
+				HttpResponse response = httpclient.execute(httpget);
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(
+								response.getEntity().getContent(), "UTF-8"));
+				String token = reader.readLine();
+				Log.d(context.getString(R.string.log_key), "Capability token: "
+						+ token);
+				return token;
+
+			} catch (Exception e) {
+				Log.e(context.getString(R.string.log_key),
+						"Error in http connection " + e.toString());
+				return new String("ERROR");
+			}
+
+		}
+
+		@Override
+		protected void onPostExecute(String token) {
+
+			if (dialog.isShowing()) {
+				dialog.dismiss();
+			}
+			try {
+				device = Twilio.createDevice(token, null /* DeviceListener */);
+				if (device != null) {
+					Toast.makeText(
+							context,
+							context.getString(R.string.capability_success_message),
+							Toast.LENGTH_LONG).show();
+				} else {
+					Toast.makeText(context,
+							context.getString(R.string.error_message),
+							Toast.LENGTH_LONG).show();
+				}
+			} catch (Exception e) {
+				Toast.makeText(context,
+						context.getString(R.string.error_message),
+						Toast.LENGTH_LONG).show();
+				Log.e(context.getString(R.string.log_key),
+						"Failed to obtain capability token: "
+								+ e.getLocalizedMessage());
+			}
+		}
+	}
 }
