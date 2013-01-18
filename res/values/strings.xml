@@ -1,0 +1,26 @@
+<resources>
+
+    <string name="app_name">TwilioClientconference</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="log_key">TWILIO</string>
+	<string name="phonenumber_key">TWILIO_CONFERENCE_NUMBER</string>
+	<string name="pnsid_key">TWILIO_CONFERENCE_PNSID</string>
+	<string name="dial_message">Dialing Conference</string>
+	<string name="hangup_message">Exiting Conference</string>
+	<string name="reset_message">Resetting conference line!</string>
+	<string name="account_sid">ACCOUNT_SID</string>
+	<string name="auth_token">AUTH_TOKEN</string>
+	<string name="app_sid">APP_SID</string>
+	<string name="capability_url">YOUR_URI</string>
+	<string name="setup_title">Setup Conference</string>
+	<string name="capability_success_message">READY!</string>
+	<string name="loading_message">Loading...</string>
+	<string name="error_message">Error!</string>
+	<string name="deleted_message">Deleted!</string>
+	<string name="purchased_message">Purchased a number!</string>
+	<string name="setup_message">Buying you a number!</string>
+	<string name="area_code">877</string>
+	
+</resources>
