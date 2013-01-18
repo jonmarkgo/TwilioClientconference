@@ -1,3 +1,4 @@
+
 package com.jonmarkgo.twilioclientconference;
 
 import java.io.BufferedReader;
@@ -31,117 +32,119 @@ import android.widget.Toast;
 
 public class TwilioClientSetupFragment extends Fragment {
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setRetainInstance(true);
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup parent,
-			Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.fragment_conference_setup, parent,
-				false);
+        setRetainInstance(true);
+    }
 
-		getActivity().setTitle(getString(R.string.setup_title));
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent,
+            Bundle savedInstanceState) {
 
-		Button setupButton = (Button) v
-				.findViewById(R.id.conference_setup_button);
-		setupButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				new BuyPhoneNumberTask(
-						(TwilioClientconferenceActivity) getActivity())
-						.execute();
+        getActivity().setTitle(getString(R.string.setup_title));
 
-			}
-		});
+        View v = inflater.inflate(R.layout.fragment_conference_setup, parent,
+                false);
 
-		return v;
-	}
+        Button setupButton = (Button) v
+                .findViewById(R.id.conference_setup_button);
+        setupButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                new BuyPhoneNumberTask(
+                        (TwilioClientConferenceActivity) getActivity())
+                        .execute();
 
-	public void savePhoneNumber(String pnsid, String phonenumber) {
-		PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
-				.putString(getString(R.string.phonenumber_key), phonenumber)
-				.putString(getString(R.string.pnsid_key), pnsid).commit();
-		Log.d(getString(R.string.log_key), "Phone number: " + phonenumber);
-		Log.d(getString(R.string.log_key), "PNSid: " + pnsid);
+            }
+        });
 
-	}
+        return v;
+    }
 
-	private class BuyPhoneNumberTask extends
-			AsyncTask<String, Integer, Boolean> {
-		private ProgressDialog dialog;
-		private Context context;
+    public void savePhoneNumber(String pnsid, String phonenumber) {
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                .putString(getString(R.string.phonenumber_key), phonenumber)
+                .putString(getString(R.string.pnsid_key), pnsid).commit();
+        Log.d(getString(R.string.log_key), "Phone number: " + phonenumber);
+        Log.d(getString(R.string.log_key), "PNSid: " + pnsid);
+    }
 
-		public BuyPhoneNumberTask(TwilioClientconferenceActivity activity) {
-			context = activity;
-			dialog = new ProgressDialog(context);
-		}
+    private class BuyPhoneNumberTask extends
+            AsyncTask<String, Integer, Boolean> {
+        private ProgressDialog mDialog;
+        private Context mContext;
 
-		protected void onPreExecute() {
-			this.dialog.setMessage(getString(R.string.setup_message));
-			this.dialog.show();
-		}
+        public BuyPhoneNumberTask(TwilioClientConferenceActivity activity) {
+            mContext = activity;
+            mDialog = new ProgressDialog(mContext);
+        }
 
-		@Override
-		protected void onPostExecute(final Boolean success) {
+        protected void onPreExecute() {
+            this.mDialog.setMessage(getString(R.string.setup_message));
+            this.mDialog.show();
+        }
 
-			if (dialog.isShowing()) {
-				dialog.dismiss();
-			}
+        @Override
+        protected void onPostExecute(final Boolean success) {
 
-			if (success) {
-				Toast.makeText(context, getString(R.string.purchased_message),
-						Toast.LENGTH_LONG).show();
-			} else {
-				Toast.makeText(context, getString(R.string.error_message),
-						Toast.LENGTH_LONG).show();
-			}
-			((TwilioClientconferenceActivity) getActivity())
-					.switchToPhoneFragment();
-		}
+            if (mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
 
-		@Override
-		protected Boolean doInBackground(String... unused) {
-			HttpClient httpclient = new DefaultHttpClient();
+            if (success) {
+                Toast.makeText(mContext, getString(R.string.purchased_message),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(mContext, getString(R.string.error_message),
+                        Toast.LENGTH_LONG).show();
+            }
+            ((TwilioClientConferenceActivity) getActivity())
+                    .switchToPhoneFragment();
+        }
 
-			((AbstractHttpClient) httpclient).getCredentialsProvider()
-					.setCredentials(
-							new AuthScope(null, -1),
-							new UsernamePasswordCredentials(
-									getString(R.string.account_sid),
-									getString(R.string.auth_token)));
+        @Override
+        protected Boolean doInBackground(String... unused) {
+            // Note that this is the old style HTTP Client. Nothing wrong with
+            // that, but Google now recommends to use URLConnection.
+            HttpClient httpclient = new DefaultHttpClient();
 
-			try {
-				ArrayList<NameValuePair> pairs = new ArrayList<NameValuePair>();
-				pairs.add(new BasicNameValuePair("AreaCode",
-						getString(R.string.area_code)));
-				pairs.add(new BasicNameValuePair("VoiceApplicationSid",
-						getString(R.string.app_sid)));
-				HttpPost httppost = new HttpPost(
-						"https://api.twilio.com/2010-04-01/Accounts/"
-								+ getString(R.string.account_sid)
-								+ "/IncomingPhoneNumbers.json");
-				httppost.setEntity(new UrlEncodedFormEntity(pairs));
-				HttpResponse response = httpclient.execute(httppost);
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(
-								response.getEntity().getContent(), "UTF-8"));
-				String json = reader.readLine();
+            ((AbstractHttpClient) httpclient).getCredentialsProvider()
+                    .setCredentials(
+                            new AuthScope(null, -1),
+                            new UsernamePasswordCredentials(
+                                    getString(R.string.account_sid),
+                                    getString(R.string.auth_token)));
 
-				JSONObject jsonObject = new JSONObject(json);
-				savePhoneNumber(jsonObject.getString("sid"),
-						jsonObject.getString("friendly_name"));
+            try {
+                ArrayList<NameValuePair> pairs = new ArrayList<NameValuePair>();
+                pairs.add(new BasicNameValuePair("AreaCode",
+                        getString(R.string.area_code)));
+                pairs.add(new BasicNameValuePair("VoiceApplicationSid",
+                        getString(R.string.app_sid)));
+                HttpPost httppost = new HttpPost(
+                        "https://api.twilio.com/2010-04-01/Accounts/"
+                                + getString(R.string.account_sid)
+                                + "/IncomingPhoneNumbers.json");
+                httppost.setEntity(new UrlEncodedFormEntity(pairs));
+                HttpResponse response = httpclient.execute(httppost);
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(
+                                response.getEntity().getContent(), "UTF-8"));
+                String json = reader.readLine();
 
-				Log.d(getString(R.string.error_message), jsonObject.toString());
+                JSONObject jsonObject = new JSONObject(json);
+                savePhoneNumber(jsonObject.getString("sid"),
+                        jsonObject.getString("friendly_name"));
 
-				return true;
-			} catch (Exception e) {
+                Log.d(getString(R.string.error_message), jsonObject.toString());
 
-				Log.e(getString(R.string.error_message),
-						"Error in http connection POST " + e.toString());
-				return false;
-			}
-		}
-	}
+                return true;
+            } catch (Exception e) {
+                Log.e(getString(R.string.error_message),
+                        "Error in http connection POST " + e.toString());
+                return false;
+            }
+        }
+    }
 }

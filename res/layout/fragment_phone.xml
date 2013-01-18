@@ -1,26 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" 
-        >
+    <Button
+        android:id="@+id/conference_join_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Join Conference" />
 
-        <Button
-            android:id="@+id/conference_join_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Join Conference" />
+    <Button
+        android:id="@+id/conference_end_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="End Conference" />
 
-      <Button
-          android:id="@+id/conference_end_button"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="End Conference" />
+    <Button
+        android:id="@+id/conference_reset_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reset App" />
 
-      <Button
-          android:id="@+id/conference_reset_button"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="Reset App" />
-
-    </LinearLayout>
+</LinearLayout>

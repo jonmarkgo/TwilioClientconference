@@ -6,26 +6,33 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
-	<!-- needed to do anything on the network -->
-<uses-permission android:name="android.permission.INTERNET" />
- 
-<!-- needed to receive audio from the microphone when in a call -->
-<uses-permission android:name="android.permission.RECORD_AUDIO" />
- 
-<!-- needed to e.g. enable/disable the speakerphone on request -->
-<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
- 
-<!-- needed to monitor for when the network is available/unavailable
-     in order to refresh background connections -->
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+    <!-- needed to do anything on the network -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- needed to receive audio from the microphone when in a call -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- needed to e.g. enable/disable the speakerphone on request -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <!--
+     needed to monitor for when the network is available/unavailable
+     in order to refresh background connections
+    -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <service android:name="com.twilio.client.TwilioClientService" android:exported="false" />
+        <service
+            android:name="com.twilio.client.TwilioClientService"
+            android:exported="false" />
+
         <activity
-            android:name=".TwilioClientconferenceActivity"
+            android:name="com.jonmarkgo.twilioclientconference.TwilioClientConferenceActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
